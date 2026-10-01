@@ -1,0 +1,253 @@
+{
+  "name": "tex-revision-cursor-extension",
+  "displayName": "TeX Revision Markup Tools",
+  "description": "Accept or reject configurable TeX revision markup in TeX files from Cursor.",
+  "version": "0.6.1",
+  "publisher": "local",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Amazing-Birds/tex-revision-cursor-extension.git"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./extension.js",
+  "activationEvents": [
+    "onCommand:texRevision.acceptAll",
+    "onCommand:texRevision.rejectAll",
+    "onCommand:texRevision.acceptSelection",
+    "onCommand:texRevision.rejectSelection",
+    "onCommand:texRevision.showChangeCount",
+    "onCommand:texRevision.goToNextChange",
+    "onCommand:texRevision.goToPreviousChange",
+    "onCommand:texRevision.openSettings",
+    "onCommand:texRevision.enableAgentInstructions",
+    "onCommand:texRevision.disableAgentInstructions",
+    "onCommand:texRevision.editAgentInstructions",
+    "onCommand:texRevision.restoreDefaultAgentInstructions",
+    "onView:texRevision.actionsView"
+  ],
+  "contributes": {
+    "configuration": {
+      "title": "TeX Revision",
+      "properties": {
+        "texRevision.addCommand": {
+          "type": "string",
+          "default": "\\add",
+          "description": "Legacy single TeX macro name used for additions. Prefer texRevision.addCommands for multiple commands."
+        },
+        "texRevision.reduceCommand": {
+          "type": "string",
+          "default": "\\reduce",
+          "description": "Legacy single TeX macro name used for removals. Prefer texRevision.reduceCommands for multiple commands."
+        },
+        "texRevision.addCommands": {
+          "type": "array",
+          "default": [
+            "\\add"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "description": "TeX macro names treated as additions. Accept unwraps these groups; Reject removes them. Both \"add\" and \"\\add\" are accepted."
+        },
+        "texRevision.reduceCommands": {
+          "type": "array",
+          "default": [
+            "\\reduce"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "description": "TeX macro names treated as removals. Accept removes these groups; Reject unwraps them. Both \"reduce\" and \"\\reduce\" are accepted."
+        },
+        "texRevision.discardCommands": {
+          "type": "array",
+          "default": [
+            "\\comment"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "description": "TeX macro names whose full command groups are removed in both Accept and Reject modes. Both \"comment\" and \"\\comment\" are accepted."
+        },
+        "texRevision.addColors": {
+          "type": "array",
+          "default": [
+            "blue"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "description": "Color names treated as additions for grouped markup such as {\\color{blue} ...}. Accept unwraps these groups; Reject removes them."
+        },
+        "texRevision.reduceColors": {
+          "type": "array",
+          "default": [
+            "red"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "description": "Color names treated as removals for grouped markup such as {\\color{red} ...}. Accept removes these groups; Reject unwraps them."
+        }
+      }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "texRevision",
+          "title": "TeX Revision",
+          "icon": "resources/tex-revision.svg"
+        }
+      ]
+    },
+    "views": {
+      "texRevision": [
+        {
+          "id": "texRevision.actionsView",
+          "name": "Revision Actions"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "texRevision.acceptAll",
+        "title": "TeX Revision: Accept All Changes",
+        "category": "TeX Revision"
+      },
+      {
+        "command": "texRevision.rejectAll",
+        "title": "TeX Revision: Reject All Changes",
+        "category": "TeX Revision"
+      },
+      {
+        "command": "texRevision.acceptSelection",
+        "title": "TeX Revision: Accept Selected Changes",
+        "category": "TeX Revision"
+      },
+      {
+        "command": "texRevision.rejectSelection",
+        "title": "TeX Revision: Reject Selected Changes",
+        "category": "TeX Revision"
+      },
+      {
+        "command": "texRevision.showChangeCount",
+        "title": "TeX Revision: Show Change Count",
+        "category": "TeX Revision"
+      },
+      {
+        "command": "texRevision.goToPreviousChange",
+        "title": "TeX Revision: Go to Previous Change",
+        "category": "TeX Revision"
+      },
+      {
+        "command": "texRevision.goToNextChange",
+        "title": "TeX Revision: Go to Next Change",
+        "category": "TeX Revision"
+      },
+      {
+        "command": "texRevision.openSettings",
+        "title": "TeX Revision: Open Settings",
+        "category": "TeX Revision"
+      },
+      {
+        "command": "texRevision.enableAgentInstructions",
+        "title": "TeX Revision: Enable Agent Instructions",
+        "category": "TeX Revision"
+      },
+      {
+        "command": "texRevision.disableAgentInstructions",
+        "title": "TeX Revision: Disable Agent Instructions",
+        "category": "TeX Revision"
+      },
+      {
+        "command": "texRevision.editAgentInstructions",
+        "title": "TeX Revision: Edit Agent Instructions",
+        "category": "TeX Revision"
+      },
+      {
+        "command": "texRevision.restoreDefaultAgentInstructions",
+        "title": "TeX Revision: Restore Default Agent Instructions",
+        "category": "TeX Revision"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "texRevision.acceptSelection",
+          "when": "editorHasSelection && resourceExtname == .tex",
+          "group": "navigation@51"
+        },
+        {
+          "command": "texRevision.rejectSelection",
+          "when": "editorHasSelection && resourceExtname == .tex",
+          "group": "navigation@52"
+        },
+        {
+          "command": "texRevision.acceptAll",
+          "when": "resourceExtname == .tex",
+          "group": "navigation@53"
+        },
+        {
+          "command": "texRevision.rejectAll",
+          "when": "resourceExtname == .tex",
+          "group": "navigation@54"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "texRevision.acceptAll",
+          "when": "editorLangId == latex || resourceExtname == .tex"
+        },
+        {
+          "command": "texRevision.rejectAll",
+          "when": "editorLangId == latex || resourceExtname == .tex"
+        },
+        {
+          "command": "texRevision.acceptSelection",
+          "when": "editorHasSelection && (editorLangId == latex || resourceExtname == .tex)"
+        },
+        {
+          "command": "texRevision.rejectSelection",
+          "when": "editorHasSelection && (editorLangId == latex || resourceExtname == .tex)"
+        },
+        {
+          "command": "texRevision.showChangeCount",
+          "when": "editorLangId == latex || resourceExtname == .tex"
+        },
+        {
+          "command": "texRevision.goToPreviousChange",
+          "when": "editorLangId == latex || resourceExtname == .tex"
+        },
+        {
+          "command": "texRevision.goToNextChange",
+          "when": "editorLangId == latex || resourceExtname == .tex"
+        },
+        {
+          "command": "texRevision.openSettings"
+        },
+        {
+          "command": "texRevision.enableAgentInstructions"
+        },
+        {
+          "command": "texRevision.disableAgentInstructions"
+        },
+        {
+          "command": "texRevision.editAgentInstructions"
+        },
+        {
+          "command": "texRevision.restoreDefaultAgentInstructions"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "test": "node test/latexMarkup.test.js"
+  },
+  "devDependencies": {}
+}

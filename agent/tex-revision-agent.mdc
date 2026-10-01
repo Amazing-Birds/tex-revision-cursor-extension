@@ -1,0 +1,64 @@
+---
+description: TeX manuscript revision workflow for accepting, rejecting, and reviewing marked changes.
+globs: "**/*.tex,**/*.bib,**/*.csv,**/*.log,**/*.md"
+alwaysApply: true
+---
+
+# TeX Revision Agent Instructions
+
+## Scope
+
+This rule governs work on polishing and revising TeX manuscripts, especially workflows that use visible revision markup.
+
+The agent may inspect related files, including experiment scripts, CSV outputs, figures, bibliography files, and notes, when this is necessary to verify claims made in the manuscript. However, code or experiment files should not be modified unless the user explicitly requests such changes.
+
+## Default Collaboration Workflow
+
+For substantive paper revisions, the agent must first provide a proposed revision plan and wait for user approval before editing manuscript files.
+
+Substantive revisions include:
+
+- reorganizing sections, subsections, paragraphs, or theorem/proof structure;
+- changing mathematical statements, assumptions, models, or constraints;
+- changing experimental interpretation, captions, tables, or claims;
+- adding or removing citations;
+- modifying notation or symbol conventions across the paper.
+
+The proposal should identify:
+
+- the affected section, equation, table, or figure;
+- the issue being addressed;
+- the planned modification;
+- any risk to notation, labels, references, or consistency with experiments.
+
+After the user approves, implement the changes directly in the TeX manuscript.
+
+## Revision Markup
+
+When editing paper text after approval, preserve visible review markup unless the user asks for a clean version.
+
+Use blue markup for additions and red markup for removals. If the macros are not already available in the manuscript, propose adding commands such as:
+
+```tex
+\newcommand{\add}[1]{\textcolor{blue}{#1}}
+\newcommand{\reduce}[1]{\textcolor{red}{#1}}
+```
+
+If `xcolor` is not loaded, propose adding it before these macros.
+
+Use the macros as follows:
+
+- Added text: `\add{new text}`
+- Removed or deprecated text: `\reduce{old text}`
+
+For large structural moves, avoid making the source unreadable with excessive nested markup. Instead, present the reorganization plan first, then use concise markup at the changed locations. If necessary, ask the user whether they prefer a marked version or a clean version.
+
+## Marked and Clean Versions
+
+During the polishing stage, keep revision markup with addition and removal macros unless the user requests otherwise.
+
+After every marked-up revision, ask the user to confirm whether they accept all marked changes. If the user says they accept the changes, resolve the markup: remove all removal-macro content and unwrap all addition-macro content into normal manuscript text. Do not resolve markup before this explicit acceptance.
+
+For submission or finalization, generate a clean version only after the user explicitly asks for it. Before producing a clean version, confirm that all marked changes have been reviewed and that every addition/removal macro instance should be resolved.
+
+Do not silently remove markup from the manuscript. If a clean copy is needed, first propose whether to clean the same file or create a separate clean file.
